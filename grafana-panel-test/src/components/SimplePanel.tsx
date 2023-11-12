@@ -29,29 +29,47 @@ const getStyles = () => {
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) => {
   const theme = useTheme2();
   const styles = useStyles2(getStyles);
-  return (
-    <div
-      className={cx(
-        styles.wrapper,
-        css`
-          width: ${width}px;
-          height: ${height}px;
-        `
-      )}
-    >
+  let color = theme.visualization.getColorByName(options.color);
+  const radii = data.series
+    .map((series) => series.fields.find((field) => field.type === 'number'))
+    .map((field) => field?.values.get(field.values.length - 1));
+  const valueToDisplay = radii[0]; 
+  const circleRadius = Math.min(width, height) / 4;
+  const fillLevel = (typeof valueToDisplay === 'number' && circleRadius > 0)
+  ? valueToDisplay / circleRadius
+  : 0
+ return (
+    <div className={cx(styles.wrapper)}>
       <svg
         className={styles.svg}
         width={width}
         height={height}
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        viewBox={`-${width / 2} -${height / 2} ${width} ${height}`}
+        viewBox={`0 0 ${width} ${height}`}
       >
-        <g>
-          <circle style={{ fill: theme.colors.primary.main }} r={100} />
-        </g>
-      </svg>
+        <defs>
+          <clipPath id={`clip-${options.panelId}`}>
+            <rect x="0" y={height * (1 - fillLevel)} width={width} height={height * fillLevel} />
 
+          </clipPath>
+        </defs>
+        <circle
+          cx={width / 2}
+          cy={height / 2}
+          r={circleRadius}
+          fill={color}
+          clipPath={`url(#clip-${options.panelId})`}
+        />
+        <text
+          x={width / 2}
+          y={height / 2 - circleRadius - 20} 
+          textAnchor="middle"
+          fill={color}
+          fontSize="16" 
+          fontFamily="Open Sans"
+        >
+          {valueToDisplay}
+        </text>
+      </svg>
       <div className={styles.textBox}>
         {options.showSeriesCount && <div>Number of series: {data.series.length}</div>}
         <div>Text option value: {options.text}</div>

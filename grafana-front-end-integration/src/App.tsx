@@ -13,11 +13,18 @@ function App() {
         </a>
       </div>
       <h1 className="text-5xl text-green-500">Vite + React</h1>
+      <div className="flex">
       <iframe
-        src="http://localhost:3000/d-solo/b41b2535-5019-4ca9-9dd1-5774771c34c9/test-time-series?orgId=1&from=1699722370045&to=1699743970045&panelId=1"
+        src="http://localhost:3000/d-solo/e96536e0-39e6-4793-bba6-65c4ef4f816a/test-panel?orgId=1&from=1699748145270&to=1699769745270&panelId=1"
         width="500"
         height="500"
-      />
+        />
+           <iframe
+        src="http://localhost:3000/d-solo/e96536e0-39e6-4793-bba6-65c4ef4f816a/test-panel?orgId=1&from=1699748145270&to=1699769745270&panelId=1"
+        width="500"
+        height="500"
+        />
+        </div>
     </div>
   );
 }
