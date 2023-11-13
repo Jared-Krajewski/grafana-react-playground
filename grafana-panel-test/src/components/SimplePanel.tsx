@@ -27,6 +27,7 @@ const getStyles = () => {
 };
 
 export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) => {
+  // console.log(`Height: ${height}`, `Width: ${width}`)
   const theme = useTheme2();
   const styles = useStyles2(getStyles);
   let color = theme.visualization.getColorByName(options.color);
@@ -34,10 +35,14 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) =
     .map((series) => series.fields.find((field) => field.type === 'number'))
     .map((field) => field?.values.get(field.values.length - 1));
   const valueToDisplay = radii[0]; 
-  const circleRadius = Math.min(width, height) / 4;
-  const fillLevel = (typeof valueToDisplay === 'number' && circleRadius > 0)
-  ? valueToDisplay / circleRadius
-  : 0
+  const circleRadius = Math.min(width, height) / 4 ;
+  const fillLevel = (typeof valueToDisplay === 'number' && valueToDisplay >= 0 && valueToDisplay <= 100)
+  ? valueToDisplay / 100
+    : 0; 
+  const fillHeight = (height - 112.5) * fillLevel;
+  const unfilledHeight = height - fillHeight;
+console.log(`Value to Display: ${valueToDisplay}`, `Fill Level: ${fillLevel}`, `Fill Height: ${fillHeight}`, `Unfilled Height: ${unfilledHeight}`);
+
  return (
     <div className={cx(styles.wrapper)}>
       <svg
@@ -48,7 +53,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height }) =
       >
         <defs>
           <clipPath id={`clip-${options.panelId}`}>
-            <rect x="0" y={height * (1 - fillLevel)} width={width} height={height * fillLevel} />
+           <rect x="0" y={unfilledHeight} width={width} height={fillHeight} />
 
           </clipPath>
         </defs>

@@ -36,5 +36,6 @@ export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOption
         ],
       },
       showIf: (config) => config.showSeriesCount,
-    });
+    })
+  
 });
